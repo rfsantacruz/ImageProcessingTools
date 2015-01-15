@@ -162,12 +162,12 @@ Image operator/(double dCte, const Image& cImRight){
 
 
 //slice operation
-int* Image::operator()(int ny, int nx){
+int& Image::operator()(int nx, int ny){
 
 	assert(m_adImageMatrix && (*m_adImageMatrix));
-	assert(ny >= 0 && ny<m_nHeight && ny >= 0 && nx<m_nWidht);
+	assert(nx >= 0 && nx<m_nHeight && ny >= 0 && ny<m_nWidht);
 
-	return &m_adImageMatrix[ny][nx];
+	return m_adImageMatrix[nx][ny];
 
 
 }
@@ -192,26 +192,26 @@ int** Image::operator()(int nId, bool bisRow){
 	return ret;
 }
 
-int*** Image::operator()(int nyBegin, int nyEnd, int nxBegin, int nxEnd ){
+int*** Image::operator()(int nxBegin, int nxEnd, int nyBegin, int nyEnd ){
 
 	assert(m_adImageMatrix && (*m_adImageMatrix));
 
-	assert(nyBegin > nyEnd);
-	assert(nyBegin >= 0 && nyBegin < m_nHeight);
-	assert(nyEnd >= 0 && nyBegin < m_nHeight);
+	assert(nxBegin < nxEnd);
+	assert(nxBegin >= 0 && nxBegin < m_nHeight);
+	assert(nxEnd >= 0 && nxBegin < m_nHeight);
 
-	assert(nxBegin > nxEnd);
-	assert(nxBegin >= 0 && nxBegin < m_nWidht);
-	assert(nxEnd >= 0 && nxBegin < m_nWidht);
+	assert(nyBegin < nyEnd);
+	assert(nyBegin >= 0 && nyBegin < m_nWidht);
+	assert(nyEnd >= 0 && nyBegin < m_nWidht);
 
-	int nSliceHeight = (nyEnd - nyBegin) + 1;
-	int nSliceWidht = (nxEnd - nxBegin) + 1;
+	int nSliceHeight = (nxEnd - nxBegin) + 1;
+	int nSliceWidht = (nyEnd - nyBegin) + 1;
 
 	int*** ret = new int**[nSliceHeight];
-	for (auto y = 0; y < nSliceHeight; ++y) {
-		ret[y] = new int*[nSliceWidht];
-		for (auto x = 0; x < nSliceWidht; ++x) {
-			ret[y][x] = &m_adImageMatrix[y][x];
+	for (auto x = 0; x < nSliceHeight; ++x) {
+		ret[x] = new int*[nSliceWidht];
+		for (auto y = 0; y < nSliceWidht; ++y) {
+			ret[x][y] = &m_adImageMatrix[x + nxBegin][y + nyBegin];
 		}
 	}
 
@@ -238,13 +238,13 @@ void Image::show(const std::string& windowName /*="Display Image"*/){
 }
 
 std::map<int,int> Image::histogram(){
-	//TODO Implement histogram computation
+
 	std::map<int,int> grayScaleFreq;
 
 	for (auto y = 0; y < m_nHeight; ++y) {
 		for (auto x = 0; x < m_nWidht; ++x) {
 			int value = m_adImageMatrix[y][x];
-			if(grayScaleFreq.find(value) != grayScaleFreq.end())
+			if(grayScaleFreq.find(value) == grayScaleFreq.end())
 				grayScaleFreq[value] =  1;
 			else
 				grayScaleFreq[value] = grayScaleFreq[value] + 1;

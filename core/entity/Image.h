@@ -15,6 +15,9 @@
 #include <highgui.h>
 #include <boost/filesystem.hpp>
 
+//TODO: implement print image method to print image matrix
+//TODO: Review implementation of each function
+//TODO: Make Image a template class to allow at least Image<int> and Image<double>
 
 class Image {
 private:
@@ -42,24 +45,24 @@ public:
 		m_eImageFileFormat = EnumUtil::str2ImFFormatEnum(strPath);
 
 		m_adImageMatrix = new int*[m_nHeight];
-		for (int y = 0; y < m_nHeight; ++y) {
-			m_adImageMatrix[y] = new int[m_nWidht];
-			for (int x = 0; x < m_nWidht; ++x) {
-				m_adImageMatrix[y][x] = static_cast<int>(cvImage.at<int>(y,x));
+		for (int x = 0; x < m_nHeight; ++x) {
+			m_adImageMatrix[x] = new int[m_nWidht];
+			for (int y = 0; y < m_nWidht; ++y) {
+				m_adImageMatrix[x][y] = static_cast<int>(cvImage.at<int>(x,y));
 			}
 		}
 
 
 	}
 
-	Image(int nWidth=100, int nHeight=100, int unValue=0, ImageFileFormat eImgFileFormat=ImageFileFormat::PNG)
+	Image(int nHeight=100, int nWidth=100, int unValue=0, ImageFileFormat eImgFileFormat=ImageFileFormat::PNG)
 	:m_strOriginalPath(""), m_nWidht(nWidth), m_nHeight(nHeight),m_eImageFileFormat(eImgFileFormat){
 
 		m_adImageMatrix = new int*[m_nHeight];
-		for (int y = 0; y < m_nHeight; ++y) {
-			m_adImageMatrix[y] = new int[m_nWidht];
-			for (int x = 0; x < m_nWidht; ++x) {
-				m_adImageMatrix[y][x] = unValue;
+		for (int x = 0; x < m_nHeight; ++x) {
+			m_adImageMatrix[x] = new int[m_nWidht];
+			for (int y = 0; y < m_nWidht; ++y) {
+				m_adImageMatrix[x][y] = unValue;
 			}
 		}
 
@@ -70,19 +73,18 @@ public:
 			m_nHeight(src.getNHeight()),m_eImageFileFormat(src.getEImageFileFormat()){
 
 		m_adImageMatrix = new int*[m_nHeight];
-		for (int y = 0; y < m_nHeight; ++y) {
-			m_adImageMatrix[y] = new int[m_nWidht];
-			for (int x = 0; x < m_nWidht; ++x) {
-				m_adImageMatrix[y][x] = src.m_adImageMatrix[y][x];
+		for (int x = 0; x < m_nHeight; ++x) {
+			m_adImageMatrix[x] = new int[m_nWidht];
+			for (int y = 0; y < m_nWidht; ++y) {
+				m_adImageMatrix[x][y] = src.m_adImageMatrix[x][y];
 			}
 		}
-
 	}
 
 	virtual ~Image(){
 
-		for (int y = 0; y < this->m_nHeight; ++y)
-			delete[] m_adImageMatrix[y];
+		for (int x = 0; x < this->m_nHeight; ++x)
+			delete[] m_adImageMatrix[x];
 
 		delete[] m_adImageMatrix;
 
@@ -110,9 +112,9 @@ public:
 	friend Image operator/(double dCte, const Image& cRight);
 
 	//slice operation
-	int* operator()(int ny, int nx);
+	int& operator()(int nx, int ny);
 	int** operator()(int nId, bool bisRow);
-	int*** operator()(int nyBegin, int nyEnd, int nxBegin, int nxEnd);
+	int*** operator()(int nxBegin, int nxEnd, int nyBegin, int nyEnd);
 
 
 	//functions

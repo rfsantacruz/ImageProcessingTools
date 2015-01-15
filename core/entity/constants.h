@@ -29,11 +29,11 @@ public:
 			boost::filesystem::path p(strPath);
 			std::string ext = p.extension().string();
 
-			if(strPath == ".jpg")
+			if(ext == ".jpg")
 				ret = ImageFileFormat::JPEG;
-			if(strPath == ".png")
+			if(ext == ".png")
 				ret = ImageFileFormat::PNG;
-			if(strPath == ".bmp")
+			if(ext == ".bmp")
 				ret = ImageFileFormat::BMP;
 		}
 

@@ -1,4 +1,5 @@
 #include "../core/entity/Image.h"
+#include <boost/filesystem.hpp>
 #include <gtest.h>
 
 
@@ -29,8 +30,7 @@ protected:
 		int result = 0;
 		for (int y = 0; y < im.getNHeight(); ++y) {
 			for (int x = 0; x < im.getNWidht(); ++x) {
-				int* pixelVal = im(y,x);
-				result = result + (*pixelVal);
+				result = result + im(y,x);
 			}
 		}
 		return result;
@@ -39,7 +39,6 @@ protected:
 	// Objects declared here can be used by all tests in the test case for Foo.
 };
 
-//TODO Implement unit tests for image class
 TEST_F(ImageTests, ArithmeticOps) {
 
 	Image A(10, 10, 5, ImageFileFormat::PNG);
@@ -81,57 +80,110 @@ TEST_F(ImageTests, ArithmeticOps) {
 
 TEST_F(ImageTests, SliceOps) {
 
-	/*//one pixel
+	//one pixel
 	Image A(10,10,10);
 	int x = 2, y = 3;
-	A(y,x) = 0;
-	ASSERT_NE(*(A(y,x)),10)
-	ASSERT_EQ(*(A(y,x)),0);
+	A(x,y) = 1;
+	ASSERT_NE((A(x,y)),10);
+	ASSERT_EQ((A(x,y)),1);
 
 	//row
 	Image B(10,10,10);
-	double L[10] = {1};
-	B(2,true) = L;
+	int** row = B(2,true);
+	for (auto ycol = 0; ycol < B.getNWidht(); ++ycol) {
+		(*row[ycol]) = 1;
+	}
 	ASSERT_EQ(B(2,3),1);
 	ASSERT_EQ(B(2,4),1);
 	ASSERT_EQ(B(2,8),1);
 
 	//col
 	Image C(10,10,10);
-	double adC[10] = {1};
-	C(2,false) = adC;
+	int** col = C(2,false);
+	for (auto xrow = 0; xrow < B.getNHeight(); ++xrow) {
+		(*col[xrow]) = 1;
+	}
 	ASSERT_EQ(C(1,2),1);
 	ASSERT_EQ(C(4,2),1);
 	ASSERT_EQ(C(9,2),1);
 
 	//slice
 	Image D(10,10,10);
-	double S[2][2] = {1};
-	D(2,3,2,3) = S;
+	int*** S = D(2,3,2,3);
+	for (auto xrow = 0; xrow < 2; ++xrow) {
+		for (auto ycol = 0; ycol < 2; ++ycol) {
+			(*(S[xrow][ycol])) = 1;
+		}
+	}
+
 	ASSERT_EQ(D(2,2),1);
 	ASSERT_EQ(D(2,3),1);
 	ASSERT_EQ(D(3,2),1);
 	ASSERT_EQ(D(3,3),1);
-*/}
+}
 
 TEST_F(ImageTests, IOOps) {
 
-	/*Image A ("");
-	A.show();
-	A.save("", ImageFileFormat::BMP);*/
+	//TODO: Fix image file reading procedure
 
+	boost::filesystem::path sInfilepath("./data/unitTestData/IOImageTestIn.png");
+	boost::filesystem::path sOutfilepath("./data/unitTestData/IOImageTestOut.jpg");
+
+	Image A (sInfilepath.string());
+	//A.show();
+	A.save(sOutfilepath.string(), ImageFileFormat::JPEG);
+	ASSERT_TRUE(boost::filesystem::exists(sOutfilepath));
+
+	Image B(sOutfilepath.string());
+	for (auto xrow = 0; xrow < A.getNHeight(); ++xrow) {
+		for (auto ycol = 0; ycol < B.getNWidht(); ++ycol) {
+			ASSERT_EQ(A(xrow,ycol),B(xrow,ycol));
+		}
+	}
 }
 
 TEST_F(ImageTests, HistogramOp) {
 
-	/*Image A;
-	Histogram = A.histogram();
-	ASSERT_EQ();*/
+	Image A(5,5,10);
+	for (auto xrow = 0; xrow < A.getNHeight(); ++xrow) {
+		for (auto ycol = 0; ycol < A.getNWidht(); ++ycol) {
+			A(xrow,ycol) = xrow;
+		}
+	}
+
+	std::map<int,int> hist = A.histogram();
+	ASSERT_EQ(hist[0], 5);
+	ASSERT_EQ(hist[1], 5);
+	ASSERT_EQ(hist[2], 5);
+	ASSERT_EQ(hist[3], 5);
+	ASSERT_EQ(hist[4], 5);
 
 }
 
 TEST_F(ImageTests, ConstructorsAndFields) {
-	//test constructors and its member access functions
+
+	Image A("./data/unitTestData/IOImageTestIn.png");
+	ASSERT_EQ(A.getNHeight(), 159);
+	ASSERT_EQ(A.getNWidht(), 317);
+	ASSERT_EQ(A.getEImageFileFormat(),ImageFileFormat::PNG);
+
+	Image B(A);
+	ASSERT_EQ(A.getNHeight(), B.getNHeight());
+	ASSERT_EQ(A.getNWidht(), B.getNWidht());
+	ASSERT_EQ(A.getEImageFileFormat(), B.getEImageFileFormat());
+	ASSERT_EQ(A.getStrOriginalPath(), B.getStrOriginalPath());
+	for (auto xrow = 0; xrow < A.getNHeight(); ++xrow) {
+		for (auto ycol = 0; ycol < B.getNWidht(); ++ycol) {
+			ASSERT_EQ(A(xrow,ycol),B(xrow,ycol));
+		}
+	}
+
+	Image C(10,20,10,ImageFileFormat::BMP);
+	ASSERT_EQ(C.getNHeight(), 10);
+	ASSERT_EQ(C.getNWidht(), 20);
+	ASSERT_EQ(sumUp(C),10*20*10);
+	ASSERT_EQ(C.getEImageFileFormat(),ImageFileFormat::BMP);
+
 }
 
 
