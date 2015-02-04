@@ -1,7 +1,8 @@
 #include "../core/entity/Image.h"
 #include <boost/filesystem.hpp>
 #include <gtest.h>
-
+#include <cv.h>
+#include <highgui.h>
 
 class ImageTests : public ::testing::Test {
 protected:
@@ -127,11 +128,12 @@ TEST_F(ImageTests, IOOps) {
 	//TODO: Fix image file reading procedure
 
 	boost::filesystem::path sInfilepath("./data/unitTestData/IOImageTestIn.png");
-	boost::filesystem::path sOutfilepath("./data/unitTestData/IOImageTestOut.jpg");
+	boost::filesystem::path sOutfilepath("./data/unitTestData/IOImageTestOut.png");
 
-	Image A (sInfilepath.string());
-	//A.show();
-	A.save(sOutfilepath.string(), ImageFileFormat::JPEG);
+	Image A(sInfilepath.string());
+	//A.show(); //uncomment to show
+	//A.print(); //uncomment to print its matrix
+	A.save(sOutfilepath.string(), ImageFileFormat::PNG);
 	ASSERT_TRUE(boost::filesystem::exists(sOutfilepath));
 
 	Image B(sOutfilepath.string());
@@ -183,6 +185,13 @@ TEST_F(ImageTests, ConstructorsAndFields) {
 	ASSERT_EQ(C.getNWidht(), 20);
 	ASSERT_EQ(sumUp(C),10*20*10);
 	ASSERT_EQ(C.getEImageFileFormat(),ImageFileFormat::BMP);
+
+}
+
+TEST_F(ImageTests, Other) {
+	boost::filesystem::path sInfilepath("./data/unitTestData/IOImageTestIn.png");
+	Image A(sInfilepath.string());
+	A.show(); //uncomment to show
 
 }
 

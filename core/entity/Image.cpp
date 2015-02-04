@@ -225,16 +225,28 @@ bool Image::save(const std::string& targetPath, ImageFileFormat eFormat /*=Image
 	boost::filesystem::path newExt(EnumUtil::imFFormatEnum2Str(eFormat));
 	p.replace_extension(newExt);
 
-	cv::Mat cmatTemp = cv::Mat(m_nHeight, m_nWidht, CV_8UC1, (*m_adImageMatrix));
+	cv::Mat cmatTemp = cv::Mat(m_nHeight, m_nWidht, CV_32SC1, (*m_adImageMatrix));
 	return cv::imwrite(p.string(), cmatTemp);
 
 }
 
 void Image::show(const std::string& windowName /*="Display Image"*/){
-	cv::Mat cmatTemp = cv::Mat(m_nHeight, m_nWidht, CV_8UC1, (*m_adImageMatrix));
+	cv::Mat cmatTemp = cv::Mat(m_nHeight, m_nWidht, CV_32SC1, (m_adImageMatrix), cv::Mat::AUTO_STEP);
+	std::cout << cmatTemp << std::endl;
 	cv::namedWindow(windowName, CV_WINDOW_AUTOSIZE );
 	cv::imshow(windowName, cmatTemp );
 	cv::waitKey(0);
+}
+
+void Image::print(){
+	if(m_adImageMatrix){
+		for (auto x = 0; x < m_nHeight; ++x) {
+			for (auto y = 0; y < m_nWidht; ++y) {
+				std::cout << m_adImageMatrix[x][y]<< '\t';
+			}
+			std::cout << std::endl;
+		}
+	}
 }
 
 std::map<int,int> Image::histogram(){
