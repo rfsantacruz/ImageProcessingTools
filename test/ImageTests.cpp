@@ -125,8 +125,6 @@ TEST_F(ImageTests, SliceOps) {
 
 TEST_F(ImageTests, IOOps) {
 
-	//TODO: Fix image file reading procedure
-
 	boost::filesystem::path sInfilepath("./data/unitTestData/IOImageTestIn.png");
 	boost::filesystem::path sOutfilepath("./data/unitTestData/IOImageTestOut.png");
 
@@ -189,10 +187,11 @@ TEST_F(ImageTests, ConstructorsAndFields) {
 }
 
 TEST_F(ImageTests, Other) {
-	boost::filesystem::path sInfilepath("./data/unitTestData/IOImageTestIn.png");
+	//debug testes
+	/*boost::filesystem::path sInfilepath("./data/unitTestData/IOImageTestIn.png");
 	Image A(sInfilepath.string());
-	A.show(); //uncomment to show
-
+	A.print();
+	A.show(); //uncomment to show*/
 }
 
 

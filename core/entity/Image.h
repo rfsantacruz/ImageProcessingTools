@@ -47,8 +47,7 @@ public:
 		for (int x = 0; x < m_nHeight; ++x) {
 			m_adImageMatrix[x] = new int[m_nWidht];
 			for (int y = 0; y < m_nWidht; ++y) {
-				cv::Scalar intensity = cvImage.at<uchar>(x,y);
-				m_adImageMatrix[x][y] = static_cast<int>(intensity.val[0]);
+				m_adImageMatrix[x][y] = static_cast<int>(cvImage.at<uchar>(x,y));
 			}
 		}
 
