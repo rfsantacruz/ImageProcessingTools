@@ -2,6 +2,7 @@
 #include <boost/filesystem.hpp>
 #include <gtest.h>
 #include <math.h>
+#include "../core/entity/GlobalDefs.h"
 
 class PixelTransformationTests : public ::testing::Test {
 protected:
@@ -50,12 +51,12 @@ TEST_F(PixelTransformationTests, Operations) {
 	Image<int> A_Int(10,10,10);
 	//Image<float> A_Float(10,10,10.0f);
 
-	Image<int> negative = PixelTransformation::getInstance().negative(A_Int, 256);
-	Image<int> logarithmic = PixelTransformation::getInstance().logarithmic(A_Int, 1);
-	Image<int> gamma = PixelTransformation::getInstance().gamma(A_Int, 1, 0.6);
+	Image<int> negative = PixelTransformation::getInstance().negative<int>(A_Int, 256);
+	Image<int> logarithmic = PixelTransformation::getInstance().logarithmic<int>(A_Int, 1);
+	Image<int> gamma = PixelTransformation::getInstance().gamma<int>(A_Int, 1, 0.6);
 
 	int C = 5;
-	pixelTransformFunction func = [&C](int pixelVal){return pixelVal + C;};
+	TypeDefs<int>::pixelTransformFunction func = [&C](int pixelVal){return pixelVal + C;};
 	Image<int> custom = PixelTransformation::getInstance().customTransform(A_Int, func);
 
 	//Assert values
@@ -74,8 +75,10 @@ TEST_F(PixelTransformationTests, Visual) {
 	Image<int> logarithmic = PixelTransformation::getInstance().logarithmic(A, 1);
 	Image<int> gamma = PixelTransformation::getInstance().gamma(A, 1, 0.6);
 
-	//negative.save("./data/unitTestData/cat_negative.png");
-	//logarithmic.save("./data/unitTestData/cat_log.png");
-	//gamma.save("./data/unitTestData/cat_gamma.png");
+/*
+	negative.save("./data/unitTestData/cat_negative.png");
+	logarithmic.save("./data/unitTestData/cat_log.png");
+	gamma.save("./data/unitTestData/cat_gamma.png");
+*/
 
 }

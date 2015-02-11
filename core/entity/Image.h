@@ -9,13 +9,11 @@
 #define IMAGE_H_
 
 #include <string>
-#include "constants.h"
-#include "structs.h"
 #include <cv.h>
 #include <highgui.h>
 #include <boost/filesystem.hpp>
+#include "Util.h"
 
-//TODO: Review concepts and implementation of each function
 
 template <class T>
 class Image{

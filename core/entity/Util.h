@@ -5,18 +5,11 @@
  *      Author: rfsantacruz
  */
 
-#ifndef CONSTANTS_H_
-#define CONSTANTS_H_
+#ifndef UTIL_H_
+#define UTIL_H_
 #include <string>
 #include <boost/filesystem.hpp>
-
-enum class ImageFileFormat
-{
-	JPEG,
-	PNG,
-	BMP,
-	NOT_ACCEPTED
-};
+#include "GlobalDefs.h"
 
 class EnumUtil{
 
@@ -66,4 +59,4 @@ public:
 };
 
 
-#endif /* CONSTANTS_H_ */
+#endif /* UTIL_H_ */

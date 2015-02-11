@@ -7,8 +7,9 @@
 
 #include "PixelOperation.h"
 
-Image<int> PixelOperation::execute(Image<int> src){
-	Image<int> ret = src;
+template<typename T>
+Image<T> PixelOperation<T>::execute(Image<T> src){
+	Image<T> ret = src;
 
 	for (auto x = 0; x < ret.getNHeight(); ++x) {
 		for (auto y = 0; y < ret.getNWidht(); ++y) {
@@ -17,4 +18,13 @@ Image<int> PixelOperation::execute(Image<int> src){
 	}
 	return ret;
 }
+
+//declare possible types
+template class PixelOperation<uchar>;
+template class PixelOperation<int>;
+template class PixelOperation<float>;
+template class PixelOperation<double>;
+
+
+
 

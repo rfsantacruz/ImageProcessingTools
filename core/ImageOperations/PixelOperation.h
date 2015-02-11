@@ -11,21 +11,21 @@
 #include "../entity/Image.h"
 #include <math.h>
 #include <functional>
+#include "../entity/GlobalDefs.h"
 
-typedef std::function<int(int)> pixelTransformFunction;
-
+template <typename T>
 class PixelOperation {
 
 private:
-	pixelTransformFunction m_func;
+	typename TypeDefs<T>::pixelTransformFunction m_func;
 
 public:
 
-	PixelOperation(pixelTransformFunction func):m_func(func){}
+	PixelOperation(typename TypeDefs<T>::pixelTransformFunction func):m_func(func){}
 
 	virtual ~PixelOperation(){}
 
-	Image<int> execute(Image<int> src);
+	Image<T> execute(Image<T> src);
 };
 
 #endif /* IMAGEOPERATIONS_PIXELOPERATION_H_ */
