@@ -16,20 +16,16 @@
 #include <boost/filesystem.hpp>
 
 //TODO: Review concepts and implementation of each function
-//TODO: Make Image a template class to allow at least Image<int> and Image<double>
 
-class Image {
+template <class T>
+class Image{
 private:
 
 	std::string m_strOriginalPath;
 	int m_nWidht;
 	int m_nHeight;
 	ImageFileFormat m_eImageFileFormat;
-	int** m_adImageMatrix;
-
-
-protected:
-
+	T** m_adImageMatrix;
 
 public:
 	//constructor and destructors
@@ -43,23 +39,23 @@ public:
 
 		m_eImageFileFormat = EnumUtil::str2ImFFormatEnum(strPath);
 
-		m_adImageMatrix = new int*[m_nHeight];
+		m_adImageMatrix = new T*[m_nHeight];
 		for (int x = 0; x < m_nHeight; ++x) {
-			m_adImageMatrix[x] = new int[m_nWidht];
+			m_adImageMatrix[x] = new T[m_nWidht];
 			for (int y = 0; y < m_nWidht; ++y) {
-				m_adImageMatrix[x][y] = static_cast<int>(cvImage.at<uchar>(x,y));
+				m_adImageMatrix[x][y] = static_cast<T>(cvImage.at<uchar>(x,y));
 			}
 		}
 
 
 	}
 
-	Image(int nHeight=100, int nWidth=100, int unValue=0, ImageFileFormat eImgFileFormat=ImageFileFormat::PNG)
+	Image(int nHeight=100, int nWidth=100, T unValue=0, ImageFileFormat eImgFileFormat=ImageFileFormat::PNG)
 	:m_strOriginalPath(""), m_nWidht(nWidth), m_nHeight(nHeight),m_eImageFileFormat(eImgFileFormat){
 
-		m_adImageMatrix = new int*[m_nHeight];
+		m_adImageMatrix = new T*[m_nHeight];
 		for (int x = 0; x < m_nHeight; ++x) {
-			m_adImageMatrix[x] = new int[m_nWidht];
+			m_adImageMatrix[x] = new T[m_nWidht];
 			for (int y = 0; y < m_nWidht; ++y) {
 				m_adImageMatrix[x][y] = unValue;
 			}
@@ -68,12 +64,12 @@ public:
 	}
 
 	//copy constructor
-	Image(const Image& src):m_strOriginalPath(src.getStrOriginalPath()), m_nWidht(src.getNWidht()),
+	Image(const Image<T>& src):m_strOriginalPath(src.getStrOriginalPath()), m_nWidht(src.getNWidht()),
 			m_nHeight(src.getNHeight()),m_eImageFileFormat(src.getEImageFileFormat()){
 
-		m_adImageMatrix = new int*[m_nHeight];
+		m_adImageMatrix = new T*[m_nHeight];
 		for (int x = 0; x < m_nHeight; ++x) {
-			m_adImageMatrix[x] = new int[m_nWidht];
+			m_adImageMatrix[x] = new T[m_nWidht];
 			for (int y = 0; y < m_nWidht; ++y) {
 				m_adImageMatrix[x][y] = src.m_adImageMatrix[x][y];
 			}
@@ -91,36 +87,49 @@ public:
 
 	}
 
-	//overloading operators
-	friend Image operator+(const Image& cIm);
-	friend Image operator+(const Image& cLeft, const Image& cRight);
-	friend Image operator+(const Image& cLeft, double dCte);
-	friend Image operator+(double dCte, const Image& cRight);
+	//overloading operators as non members function
+	template <class U>
+	friend Image<U> operator+(const Image<U>& cIm);
+	template <class U>
+	friend Image<U> operator+(const Image<U>& cLeft ,const Image<U>& cRight);
+	template <class U>
+	friend Image<U> operator+(const Image<U>& cLeft, U dCte);
+	template <class U>
+	friend Image<U> operator+(U dCte, const Image<U>& cRight);
 
-	friend Image operator-(const Image& cIm);
-	friend Image operator-(const Image& cLeft, const Image& cRight);
-	friend Image operator-(const Image& cLeft, double dCte);
-	friend Image operator-(double dCte, const Image& cRight);
+	template <class U>
+	friend Image<U> operator-(const Image<U>& cIm);
+	template <class U>
+	friend Image<U> operator-(const Image<U>& cLeft, const Image<U>& cRight);
+	template <class U>
+	friend Image<U> operator-(const Image<U>& cLeft , U dCte);
+	template <class U>
+	friend Image<U> operator-(U dCte, const Image<U>& cRight);
 
-	friend Image operator*(const Image& cLeft, const Image& cRight);
-	friend Image operator*(const Image& cLeft, double dCte);
-	friend Image operator*(double dCte, const Image& cRight);
+	template <class U>
+	friend Image<U> operator*(const Image<U>& cLeft, const Image<U>& cRight);
+	template <class U>
+	friend Image<U> operator*(const Image<U>& cLeft, U dCte);
+	template <class U>
+	friend Image<U> operator*(U dCte, const Image<U>& cRight);
 
-	friend Image operator/(const Image& cLeft, const Image& cRight);
-	friend Image operator/(const Image& cLeft, double dCte);
-	friend Image operator/(double dCte, const Image& cRight);
+	template <class U>
+	friend Image<U> operator/(const Image<U>& cLeft, const Image<U>& cRight);
+	template <class U>
+	friend Image<U> operator/(const Image<U>& cLeft, U dCte);
+	template <class U>
+	friend Image<U> operator/(U dCte, const Image<U>& cRight);
 
-	//slice operation
-	int& operator()(int nx, int ny);
-	int** operator()(int nId, bool bisRow);
-	int*** operator()(int nxBegin, int nxEnd, int nyBegin, int nyEnd);
+	//slice operation overload as member function
+	T& operator()(int nx, int ny);
+	T** operator()(int nId, bool bisRow);
+	T*** operator()(int nxBegin, int nxEnd, int nyBegin, int nyEnd);
 
-
-	//functions
+	//members functions
 	bool save(const std::string& targetPath, ImageFileFormat eFormat=ImageFileFormat::PNG);
 	void show(const std::string& windowName="Display Image");
 	void print();
-	std::map<int,int> histogram();
+	std::map<T,int> histogram();
 
 	//getters and setters
 	int getNHeight() const {
@@ -148,5 +157,172 @@ public:
 		m_eImageFileFormat = eImageFileFormat;
 	}
 };
+
+
+template <class T>
+Image<T> operator+(const Image<T>& cIm){
+	assert(cIm.m_adImageMatrix && (*cIm.m_adImageMatrix));
+	return cIm;
+}
+
+template <class T>
+Image<T> operator+(T dCte, const Image<T>& cRight){
+
+	Image<T> ret = cRight;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] += dCte;
+		}
+	}
+	return (ret);
+}
+
+template <class T>
+Image<T> operator+(const Image<T>& cImLeft, T dCte){
+		return dCte + cImLeft;
+}
+
+template <class T>
+Image<T> operator+(const Image<T>& cLeft, const Image<T>& cImRight){
+
+	Image<T> ret = cLeft;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+	assert(cImRight.m_adImageMatrix && (*cImRight.m_adImageMatrix));
+	assert(cImRight.m_nHeight == ret.m_nHeight && cImRight.m_nWidht == ret.m_nWidht);
+
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] += cImRight.m_adImageMatrix[y][x];
+		}
+	}
+	return ret;
+}
+
+template <class T>
+Image<T> operator-(const Image<T>& cIm){
+
+	Image<T> ret = cIm;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] = -ret.m_adImageMatrix[y][x];
+		}
+	}
+
+	return ret;
+}
+
+template <class T>
+Image<T> operator-(const Image<T>& cLeft, T dCte){
+	Image<T> ret = cLeft;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] -= dCte;
+		}
+	}
+	return (ret);
+}
+
+template <class T>
+Image<T> operator-(T dCte, const Image<T>& cImRight){
+	return cImRight - dCte;
+}
+
+template <class T>
+Image<T> operator-(const Image<T>& cLeft, const Image<T>& cImRight){
+
+	Image<T> ret = cLeft;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+	assert(cImRight.m_adImageMatrix && (*cImRight.m_adImageMatrix));
+	assert(cImRight.m_nHeight == ret.m_nHeight && cImRight.m_nWidht == ret.m_nWidht);
+
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] -= cImRight.m_adImageMatrix[y][x];
+		}
+	}
+	return ret;
+}
+
+template <class T>
+Image<T> operator*(const Image<T>& cLeft, const Image<T>& cImRight){
+
+	Image<T> ret = cLeft;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+	assert(cImRight.m_adImageMatrix && (*cImRight.m_adImageMatrix));
+	assert(cImRight.m_nHeight == ret.m_nHeight && cImRight.m_nWidht == ret.m_nWidht);
+
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] *= cImRight.m_adImageMatrix[y][x];
+		}
+	}
+	return ret;
+}
+
+template <class T>
+Image<T> operator*(const Image<T>& cLeft, T dCte){
+	Image<T> ret = cLeft;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] *= dCte;
+		}
+	}
+	return (ret);
+}
+
+template <class T>
+Image<T> operator*(T dCte, const Image<T>& cImRight){
+	return cImRight + dCte;
+}
+
+template <class T>
+Image<T> operator/(const Image<T>& cLeft, const Image<T>& cImRight){
+	Image<T> ret = cLeft;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+	assert(cImRight.m_adImageMatrix && (*cImRight.m_adImageMatrix));
+	assert(cImRight.m_nHeight == ret.m_nHeight && cImRight.m_nWidht == ret.m_nWidht);
+
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] /= cImRight.m_adImageMatrix[y][x];
+		}
+	}
+	return ret;
+}
+
+template <class T>
+Image<T> operator/(const Image<T>& cLeft, T dCte){
+	Image<T> ret = cLeft;
+
+	assert(ret.m_adImageMatrix && (*ret.m_adImageMatrix));
+
+	for(auto y = 0 ; y < ret.m_nHeight ; y++){
+		for (auto x = 0; x < ret.m_nWidht; ++x) {
+			ret.m_adImageMatrix[y][x] /= dCte;
+		}
+	}
+	return (ret);
+}
+
+template <class T>
+Image<T> operator/(T dCte, const Image<T>& cImRight){
+	return cImRight + dCte;
+}
+
 
 #endif /* IMAGE_H_ */
