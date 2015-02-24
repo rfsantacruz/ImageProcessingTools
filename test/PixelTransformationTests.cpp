@@ -3,6 +3,8 @@
 #include <gtest.h>
 #include <math.h>
 #include "../core/entity/GlobalDefs.h"
+#include "../core/ImageTransformation/SmoothFiltering.h"
+#include "../core/ImageTransformation/SharpenFiltering.h"
 
 class PixelTransformationTests : public ::testing::Test {
 protected:
@@ -82,3 +84,27 @@ TEST_F(PixelTransformationTests, Visual) {
 */
 
 }
+
+TEST_F(PixelTransformationTests, smoothinOperations) {
+
+	Image<int> A_Int("./data/unitTestData/cat.jpg");
+
+	Image<int> mean = SmoothFiltering::getInstance().mean(A_Int, 5);
+	Image<int> median = SmoothFiltering::getInstance().median(A_Int, 1);
+
+	mean.save("./data/unitTestData/cat_mean.png");
+	median.save("./data/unitTestData/cat_median.png");
+
+}
+
+TEST_F(PixelTransformationTests, sharpenOperations) {
+
+	Image<int> A_Int("./data/unitTestData/cat.jpg");
+
+	Image<int> laplacian = SharpenFiltering::getInstance().laplacian(A_Int, 1, true);
+
+	laplacian.save("./data/unitTestData/cat_laplacian.png");
+
+
+}
+

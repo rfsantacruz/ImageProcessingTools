@@ -1,0 +1,44 @@
+/*
+ * WindowOperation.cpp
+ *
+ *  Created on: Feb 19, 2015
+ *      Author: rfsantacruz
+ */
+
+#include "WindowOperation.h"
+
+
+Image<int> WindowOperation::execute(Image<int> src){
+
+	Image<int> ret = src;
+
+	for (auto xCentral = m_mask.getNRadius(); xCentral < ret.getNHeight() - m_mask.getNRadius(); xCentral++) {
+		for (auto yCentral = m_mask.getNRadius(); yCentral < ret.getNWidht() - m_mask.getNRadius(); yCentral++) {
+
+			int xbegin = xCentral - m_mask.getNRadius();
+			int xend = xCentral + m_mask.getNRadius();
+			int ybegin = yCentral - m_mask.getNRadius();
+			int yend = yCentral + m_mask.getNRadius();
+
+			//transform image reference to
+			int** win = new int*[2*m_mask.getNRadius() + 1];
+			int*** winRef = ret(xbegin, xend, ybegin, yend);
+			for (auto xwin = 0; xwin < 2*m_mask.getNRadius() + 1; ++xwin) {
+				win[xwin] = new int[2*m_mask.getNRadius() + 1];
+				for (auto ywin = 0; ywin < 2*m_mask.getNRadius() + 1; ++ywin) {
+					win[xwin][ywin] = (*winRef[xwin][ywin]);
+				}
+			}
+			//peform convolution
+			ret(xCentral,yCentral) = m_mask.compute(win);
+
+			//free space
+			for (auto xwin = 0; xwin < 2*m_mask.getNRadius() + 1; ++xwin) {
+				delete[] win[xwin];
+			}
+			delete[] win;
+		}
+	}
+
+	return ret;
+}
