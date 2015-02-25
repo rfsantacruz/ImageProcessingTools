@@ -7,10 +7,10 @@
 
 #include "WindowOperation.h"
 
+template<typename T>
+Image<T> WindowOperation<T>::execute(Image<T> src){
 
-Image<int> WindowOperation::execute(Image<int> src){
-
-	Image<int> ret = src;
+	Image<T> ret = src;
 
 	for (auto xCentral = m_mask.getNRadius(); xCentral < ret.getNHeight() - m_mask.getNRadius(); xCentral++) {
 		for (auto yCentral = m_mask.getNRadius(); yCentral < ret.getNWidht() - m_mask.getNRadius(); yCentral++) {
@@ -21,10 +21,10 @@ Image<int> WindowOperation::execute(Image<int> src){
 			int yend = yCentral + m_mask.getNRadius();
 
 			//transform image reference to
-			int** win = new int*[2*m_mask.getNRadius() + 1];
-			int*** winRef = ret(xbegin, xend, ybegin, yend);
+			T** win = new T*[2*m_mask.getNRadius() + 1];
+			T*** winRef = ret(xbegin, xend, ybegin, yend);
 			for (auto xwin = 0; xwin < 2*m_mask.getNRadius() + 1; ++xwin) {
-				win[xwin] = new int[2*m_mask.getNRadius() + 1];
+				win[xwin] = new T[2*m_mask.getNRadius() + 1];
 				for (auto ywin = 0; ywin < 2*m_mask.getNRadius() + 1; ++ywin) {
 					win[xwin][ywin] = (*winRef[xwin][ywin]);
 				}
@@ -42,3 +42,9 @@ Image<int> WindowOperation::execute(Image<int> src){
 
 	return ret;
 }
+
+//declare possible types
+template class WindowOperation<uchar>;
+template class WindowOperation<int>;
+template class WindowOperation<float>;
+template class WindowOperation<double>;

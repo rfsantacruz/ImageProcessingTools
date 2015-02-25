@@ -8,6 +8,7 @@
 #ifndef GENERICCONVOLUTIONMASK_H_
 #define GENERICCONVOLUTIONMASK_H_
 
+template<typename T>
 class GenericConvolutionMask {
 private:
 	int m_nRadius;
@@ -18,10 +19,10 @@ public:
 	virtual ~GenericConvolutionMask(){}
 
 	//virtual abstract function
-	virtual int compute(int** window)=0;
+	virtual T compute(T** window)=0;
 
-	int convolute(int** window, int** kernel){
-		int sum = 0;
+	T convolute(T** window, T** kernel){
+		T sum = 0;
 
 		for (int x = 0; x < (2*getNRadius()) + 1; x++) {
 			for (int y = 0;  y < (2*getNRadius()) + 1; y++) {
@@ -29,8 +30,7 @@ public:
 			}
 		}
 
-		return sum;
-
+		return static_cast<T>(sum);
 	}
 
 	int getNRadius() const {

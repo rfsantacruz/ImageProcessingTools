@@ -27,16 +27,18 @@ public:
 	}
 	virtual ~SmoothFiltering(){}
 
-	Image<int> mean(const Image<int>& img, int radius){
-		MeanMask mask(radius);
-		WindowOperation op(mask);
+	template<typename T>
+	Image<T> mean(const Image<T>& img, int radius){
+		MeanMask<T> mask(radius);
+		WindowOperation<T> op(mask);
 		return op.execute(img);
 
 	}
 
-	Image<int> median(const Image<int>& img, int radius){
-		MedianMask mask(radius);
-		WindowOperation op(mask);
+	template<typename T>
+	Image<T> median(const Image<T>& img, int radius){
+		MedianMask<T> mask(radius);
+		WindowOperation<T> op(mask);
 		return op.execute(img);
 
 	}

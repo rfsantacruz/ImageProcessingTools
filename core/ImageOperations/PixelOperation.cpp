@@ -18,6 +18,10 @@ Image<T> PixelOperation<T>::execute(Image<T> src){
 	}
 	return ret;
 }
+template<typename T>
+void PixelOperation<T>::setFunc(const typename TypeDefs<T>::pixelTransformFunction& func) {
+		m_func = func;
+}
 
 //declare possible types
 template class PixelOperation<uchar>;

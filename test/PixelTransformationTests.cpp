@@ -77,11 +77,10 @@ TEST_F(PixelTransformationTests, Visual) {
 	Image<int> logarithmic = PixelTransformation::getInstance().logarithmic(A, 1);
 	Image<int> gamma = PixelTransformation::getInstance().gamma(A, 1, 0.6);
 
-/*
 	negative.save("./data/unitTestData/cat_negative.png");
 	logarithmic.save("./data/unitTestData/cat_log.png");
 	gamma.save("./data/unitTestData/cat_gamma.png");
-*/
+
 
 }
 
@@ -102,9 +101,10 @@ TEST_F(PixelTransformationTests, sharpenOperations) {
 	Image<int> A_Int("./data/unitTestData/cat.jpg");
 
 	Image<int> laplacian = SharpenFiltering::getInstance().laplacian(A_Int, 1, true);
+	Image<int> sobel = SharpenFiltering::getInstance().sobel(A_Int,3);
 
 	laplacian.save("./data/unitTestData/cat_laplacian.png");
-
+	sobel.save("./data/unitTestData/cat_sobel.png");
 
 }
 

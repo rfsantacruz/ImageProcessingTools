@@ -11,16 +11,21 @@
 #include "../entity/Image.h"
 #include "../masks/GenericConvolutionMask.h"
 
+template<typename T>
 class WindowOperation {
 
 private:
-	GenericConvolutionMask& m_mask;
+	GenericConvolutionMask<T>& m_mask;
 
 public:
-	WindowOperation(GenericConvolutionMask& mask):m_mask(mask){}
+	WindowOperation(GenericConvolutionMask<T>& mask):m_mask(mask){}
 	virtual ~WindowOperation(){}
 
-	Image<int> execute(Image<int> src);
+	Image<T> execute(Image<T> src);
+
+	void setMask(GenericConvolutionMask<T>& mask){
+		m_mask = mask;
+	}
 };
 
 #endif /* IMAGEOPERATIONS_WINDOWOPERATION_H_ */

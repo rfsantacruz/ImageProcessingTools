@@ -18,6 +18,12 @@ enum class ImageFileFormat
 	NOT_ACCEPTED
 };
 
+enum class ESobel{
+	Horizontal,
+	Vertical,
+	Absolute
+};
+
 //list of defs
 template<typename T>
 struct TypeDefs

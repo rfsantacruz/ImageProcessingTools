@@ -5,27 +5,28 @@
  *      Author: rfsantacruz
  */
 
-#ifndef LAPLACIANMASK_H_
-#define LAPLACIANMASK_H_
+#ifndef SOBELMASK_H_
+#define SOBELMASK_H_
 
-class SobelMask: public GenericConvolutionMask{
+template<typename T>
+class SobelMask: public GenericConvolutionMask<T>{
 
 private:
 	bool m_bhorizontal;
-	int** m_akernel;
+	T** m_akernel;
 
 public:
-	SobelMask(int nRadius, bool horizontal=true):GenericConvolutionMask(nRadius), m_bhorizontal(horizontal){
+	SobelMask(int nRadius, bool horizontal=true):GenericConvolutionMask<T>(nRadius), m_bhorizontal(horizontal){
 
 		//assert(getNRadius() == 3 || getNRadius() == 5);
 
-		const int length = (2*getNRadius()) + 1;
-		m_akernel = new int*[length];
+		const int length = (2*this->getNRadius()) + 1;
+		m_akernel = new T*[length];
 		for (auto x = 0; x < length; ++x) {
-			m_akernel[x] = new int[length];
+			m_akernel[x] = new T[length];
 		}
 
-		if(getNRadius() == 3){
+		if(this->getNRadius() == 3){
 			if(m_bhorizontal){
 				m_akernel[0][0]=-1;m_akernel[0][1]=-2;m_akernel[0][2]=-1;
 				m_akernel[1][0]=0;m_akernel[1][1]=0;m_akernel[1][2]=0;
@@ -36,7 +37,7 @@ public:
 				m_akernel[1][0]=2;m_akernel[1][1]=0;m_akernel[1][2]=-2;
 				m_akernel[2][0]=1;m_akernel[2][1]=0;m_akernel[2][2]=-1;
 			}
-		}else if(getNRadius() == 5){
+		}else if(this->getNRadius() == 5){
 			if(m_bhorizontal){
 				m_akernel[0][0]=-1;m_akernel[0][1]=-4;m_akernel[0][2]=-6;m_akernel[0][3]=-4;m_akernel[0][4]=-1;
 				m_akernel[1][0]=-2;m_akernel[1][1]=-8;m_akernel[1][2]=-12;m_akernel[1][3]=-8;m_akernel[1][4]=-2;
@@ -54,15 +55,17 @@ public:
 	}
 
 	virtual ~SobelMask(){
-		int length = (2*getNRadius()) + 1;
+		int length = (2*this->getNRadius()) + 1;
 		for (auto x = 0; x < length; ++x) {
 			delete[] m_akernel[x];
 		}
 		delete m_akernel;
+
+		m_akernel = nullptr;
 	}
 
-	virtual int compute(int** window) override{
-		return convolute(window, m_akernel);
+	virtual T compute(T** window) override{
+		return this->convolute(window, m_akernel);
 	}
 
 };
@@ -71,4 +74,4 @@ public:
 
 
 
-#endif /* LAPLACIANMASK_H_ */
+#endif /* SOBELMASK_H_ */

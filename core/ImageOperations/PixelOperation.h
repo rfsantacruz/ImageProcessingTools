@@ -26,6 +26,9 @@ public:
 	virtual ~PixelOperation(){}
 
 	Image<T> execute(Image<T> src);
+
+	void setFunc(const typename TypeDefs<T>::pixelTransformFunction& func);
+
 };
 
 #endif /* IMAGEOPERATIONS_PIXELOPERATION_H_ */

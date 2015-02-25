@@ -11,27 +11,28 @@
 #include <vector>
 #include <algorithm>
 
-class MedianMask: public GenericConvolutionMask{
+template<typename T>
+class MedianMask: public GenericConvolutionMask<T>{
 
 public:
-	MedianMask(int nRadius):GenericConvolutionMask(nRadius){}
+	MedianMask(int nRadius):GenericConvolutionMask<T>(nRadius){}
 
 	virtual ~MedianMask(){}
 
-	virtual int compute(int** window) override{
-		int pixelArea = pow((2*getNRadius() + 1),2);
-		std::vector<int> pixels(pixelArea);
+	virtual T compute(T** window) override{
+		int pixelArea = pow((2*this->getNRadius() + 1),2);
+		std::vector<T> pixels(pixelArea);
 		int idx = 0;
 
-		for (int x = 0; x < (2*getNRadius()) + 1; x++) {
-			for (int y = 0;  y < (2*getNRadius()) + 1; y++) {
-				idx = y + (x * ((2*getNRadius()) + 1));
+		for (int x = 0; x < (2*this->getNRadius()) + 1; x++) {
+			for (int y = 0;  y < (2*this->getNRadius()) + 1; y++) {
+				idx = y + (x * ((2*this->getNRadius()) + 1));
 				pixels[idx] = window[x][y];
 			}
 		}
 		std::sort(pixels.begin(), pixels.end());
-		idx = getNRadius() + (getNRadius() * ((2*getNRadius()) + 1));
-		return pixels[idx];
+		idx = this->getNRadius() + (this->getNRadius() * ((2*this->getNRadius()) + 1));
+		return static_cast<T>(pixels[idx]);
 	}
 
 
