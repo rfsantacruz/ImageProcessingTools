@@ -43,8 +43,7 @@ public:
 					centerValue++;
 			}
 		}
-		m_akernel[this->getNRadius()][this->getNRadius()] = centerValue;
-
+		m_akernel[this->getNRadius()][this->getNRadius()] = centerValue - 1;
 	}
 
 	virtual ~LaplacianMask(){

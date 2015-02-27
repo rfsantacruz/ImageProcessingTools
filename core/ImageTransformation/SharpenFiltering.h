@@ -15,6 +15,7 @@
 #include <math.h>
 #include "../entity/GlobalDefs.h"
 #include "../ImageOperations/PixelOperation.h"
+#include <functional>
 
 class SharpenFiltering {
 

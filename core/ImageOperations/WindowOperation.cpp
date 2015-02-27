@@ -20,15 +20,16 @@ Image<T> WindowOperation<T>::execute(Image<T> src){
 			int ybegin = yCentral - m_mask.getNRadius();
 			int yend = yCentral + m_mask.getNRadius();
 
-			//transform image reference to
+			//transform image reference to value
 			T** win = new T*[2*m_mask.getNRadius() + 1];
-			T*** winRef = ret(xbegin, xend, ybegin, yend);
+			T*** winRef = src(xbegin, xend, ybegin, yend);
 			for (auto xwin = 0; xwin < 2*m_mask.getNRadius() + 1; ++xwin) {
 				win[xwin] = new T[2*m_mask.getNRadius() + 1];
 				for (auto ywin = 0; ywin < 2*m_mask.getNRadius() + 1; ++ywin) {
 					win[xwin][ywin] = (*winRef[xwin][ywin]);
 				}
 			}
+
 			//peform convolution
 			ret(xCentral,yCentral) = m_mask.compute(win);
 
@@ -36,7 +37,7 @@ Image<T> WindowOperation<T>::execute(Image<T> src){
 			for (auto xwin = 0; xwin < 2*m_mask.getNRadius() + 1; ++xwin) {
 				delete[] win[xwin];
 			}
-			delete[] win;
+			delete win;
 		}
 	}
 

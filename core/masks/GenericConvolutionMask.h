@@ -23,9 +23,10 @@ public:
 
 	T convolute(T** window, T** kernel){
 		T sum = 0;
+		int length = (2*getNRadius()) + 1;
 
-		for (int x = 0; x < (2*getNRadius()) + 1; x++) {
-			for (int y = 0;  y < (2*getNRadius()) + 1; y++) {
+		for (int x = 0; x < length; x++) {
+			for (int y = 0;  y < length; y++) {
 				sum += kernel[x][y] * window[x][y];
 			}
 		}

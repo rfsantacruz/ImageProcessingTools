@@ -5,6 +5,7 @@
 #include "../core/entity/GlobalDefs.h"
 #include "../core/ImageTransformation/SmoothFiltering.h"
 #include "../core/ImageTransformation/SharpenFiltering.h"
+#include "../core/ImageTransformation/ImageTransformation.h"
 
 class PixelTransformationTests : public ::testing::Test {
 protected:
@@ -81,7 +82,6 @@ TEST_F(PixelTransformationTests, Visual) {
 	logarithmic.save("./data/unitTestData/cat_log.png");
 	gamma.save("./data/unitTestData/cat_gamma.png");
 
-
 }
 
 TEST_F(PixelTransformationTests, smoothinOperations) {
@@ -100,11 +100,10 @@ TEST_F(PixelTransformationTests, sharpenOperations) {
 
 	Image<int> A_Int("./data/unitTestData/cat.jpg");
 
-	Image<int> laplacian = SharpenFiltering::getInstance().laplacian(A_Int, 1, true);
-	Image<int> sobel = SharpenFiltering::getInstance().sobel(A_Int,3);
+	Image<int> laplacian = ImageTransformation::getInstance().minMaxScaling(SharpenFiltering::getInstance().laplacian(A_Int, 1, true));
+	Image<int> sobel = ImageTransformation::getInstance().minMaxScaling(SharpenFiltering::getInstance().sobel(A_Int, 1));
 
 	laplacian.save("./data/unitTestData/cat_laplacian.png");
 	sobel.save("./data/unitTestData/cat_sobel.png");
 
 }
-

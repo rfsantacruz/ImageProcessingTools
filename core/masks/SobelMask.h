@@ -18,7 +18,7 @@ private:
 public:
 	SobelMask(int nRadius, bool horizontal=true):GenericConvolutionMask<T>(nRadius), m_bhorizontal(horizontal){
 
-		//assert(getNRadius() == 3 || getNRadius() == 5);
+		//assert(getNRadius() == 1 || getNRadius() == 2);
 
 		const int length = (2*this->getNRadius()) + 1;
 		m_akernel = new T*[length];
@@ -26,7 +26,7 @@ public:
 			m_akernel[x] = new T[length];
 		}
 
-		if(this->getNRadius() == 3){
+		if(this->getNRadius() == 1){
 			if(m_bhorizontal){
 				m_akernel[0][0]=-1;m_akernel[0][1]=-2;m_akernel[0][2]=-1;
 				m_akernel[1][0]=0;m_akernel[1][1]=0;m_akernel[1][2]=0;
@@ -37,7 +37,7 @@ public:
 				m_akernel[1][0]=2;m_akernel[1][1]=0;m_akernel[1][2]=-2;
 				m_akernel[2][0]=1;m_akernel[2][1]=0;m_akernel[2][2]=-1;
 			}
-		}else if(this->getNRadius() == 5){
+		}else if(this->getNRadius() == 2){
 			if(m_bhorizontal){
 				m_akernel[0][0]=-1;m_akernel[0][1]=-4;m_akernel[0][2]=-6;m_akernel[0][3]=-4;m_akernel[0][4]=-1;
 				m_akernel[1][0]=-2;m_akernel[1][1]=-8;m_akernel[1][2]=-12;m_akernel[1][3]=-8;m_akernel[1][4]=-2;

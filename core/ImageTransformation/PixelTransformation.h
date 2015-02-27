@@ -14,8 +14,6 @@
 #include <math.h>
 
 //TODO Adapt template of transformation for Image<T> -> Image<U>
-//TODO Create a class to store typeDefs and class template instantiations
-
 
 class PixelTransformation {
 
